@@ -212,39 +212,52 @@ static void edge(GimpDrawable *drawable, GimpPreview *preview)
 	gint *filtThresh	= g_new(gint, halfSize);
 	gint *filtMag		= g_new(gint, halfSize);
 
+	if (!preview) gimp_progress_update(0.10);
+
 	// We only need to work in greyscale
 	greyscale(in, buffer, size, channels, alpha);
+	if (!preview) gimp_progress_update(0.15);
 
 	// Either automatically calculate a threshold or used the user-supplied one
 	gint threshold = evals.automatic ? get_threshold(buffer, size) : evals.threshold;
+	if (!preview) gimp_progress_update(0.20);
 
 	// Initial smoothing
 	blur(buffer, blurred, width, height);
+	if (!preview) gimp_progress_update(0.30);
 	downsize(blurred, blurredHalf, width, height, halfWidth, halfHeight);
+	if (!preview) gimp_progress_update(0.35);
 
 	// Calculate edge magnitude from the downsized blurred image
 	magnitude(blurredHalf, magHalf, halfWidth, halfHeight);
+	if (!preview) gimp_progress_update(0.40);
 	upsizei(magHalf, mag, halfWidth, halfHeight, width, height);
+	if (!preview) gimp_progress_update(0.50);
 
 	// Multiply the blurred image with magnitude image
 	multiply(blurredHalf, magHalf, threshHalf, halfSize);
+	if (!preview) gimp_progress_update(0.525);
 
 	// Blur the new threshold image and the magnitude image
 	bluri(threshHalf, filtThresh, halfWidth, halfHeight);
+	if (!preview) gimp_progress_update(0.575);
 	bluri(magHalf, filtMag, halfWidth, halfHeight);
+	if (!preview) gimp_progress_update(0.625);
 
 	// Divide the threshold image by the blurred magnitude image
 	// then upscale (using the original downsized blurred image as a buffer)
 	divide(filtThresh, filtMag, blurredHalf, halfSize);
+	if (!preview) gimp_progress_update(0.65);
 	upsize(blurredHalf, buffer, halfWidth, halfHeight, width, height);
+	if (!preview) gimp_progress_update(0.75);
 
 	// Threshold the image based on the magnitude and the threshold image
 	apply_threshold(blurred, mag, buffer, size, threshold);
-
-	//copy(blurred, out, size, channels, alpha);
+	if (!preview) gimp_progress_update(0.80);
 
 	// Filter to find connected edges and remove lone edge points
 	filter(blurred, out, width, height, channels, alpha);
+	if (!preview) gimp_progress_update(0.90);
 
 	gimp_pixel_rgn_set_rect(&rout, out, x1, y1, width, height);
 
@@ -268,6 +281,7 @@ static void edge(GimpDrawable *drawable, GimpPreview *preview)
 		gimp_drawable_flush(drawable);
 		gimp_drawable_merge_shadow (drawable->drawable_id, TRUE);
 		gimp_drawable_update(drawable->drawable_id, x1, y1, width, height);
+		gimp_progress_update(1.0);
 	}
 }
 
