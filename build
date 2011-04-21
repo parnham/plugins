@@ -1,0 +1,13 @@
+#!/bin/bash
+
+[ ! -d "bin" ] && mkdir bin
+cd bin
+
+[ ! -d "x32" ] && mkdir x32
+[ ! -d "x64" ] && mkdir x64
+
+cd x32
+CFLAGS="-m32" gimptool-2.0 --build ../../gimp/adaptive-edge.c
+
+cd ../x64
+gimptool-2.0 --build ../../gimp/adaptive-edge.c
