@@ -6,8 +6,8 @@ GIMP
 
 ### Installation
 
-Under Ubuntu simply ensure you have the libgimp2.0-dev package installed from the repositories (other distributions
-should have an equivalent) and you should also install build-essential if you do not already have it.
+If you are using Ubuntu then install the libgimp2.0-dev and build-essential packages from the repositories (other distributions
+should have similar packages available).
 
 Then it is simply a case of running
 
