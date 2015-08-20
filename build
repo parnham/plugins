@@ -6,6 +6,8 @@ cd bin
 [ ! -d "x32" ] && mkdir x32
 [ ! -d "x64" ] && mkdir x64
 
+export LDFLAGS="$LDFLAGS -lm"
+
 cd x32
 CFLAGS="-m32" gimptool-2.0 --build ../../gimp/adaptive-edge.c
 
